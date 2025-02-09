@@ -5,36 +5,38 @@
 
 package com.sicomsa.dmt;
 
-
-
 import java.time.Instant;
 /**
- *
- * @author https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198
- * 
- * @since 2024.9.9
- * @version 2024.10.27
- * 
- * Represents the response form Sat massive download web service when requesting
- * a download for the first time of a particular query.
+ * <code>SolicitaResponse</code> is SAT's response from a download request to
+ * the massive download web service when requesting a download for the first
+ * time of a particular query.
  * 
  * The property requestId received can be used to verify the request.
+ * @author <a href="https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198">Beto Lopez</a>
+ * 
+ * @version 2024.10.27
+ * @since 1.0
  * 
  */
 public class SolicitaResponse extends SatResponse {
     
     private static final long serialVersionUID = 20241027L;
     
+    /**
+     * The request id provided by SAT to identify the download request.
+     */
     protected String requestId;
     
     /**
+     * Returns a <code>SolicitaResponse</code> with the given parameters.
      * 
-     * @param satInstant
-     * @param statusCode
-     * @param message
+     * @param satInstant <code>Instant</code> mesage was received from SAT
+     * @param statusCode status code of the received message
+     * @param message message received
      * @param requestId 
      *          IdSolicitud attribute. Could be null according to wsdl, however
-     *          isAccept() will be false if no requestId is provided from Sat.
+     *          method <code>isAccept</code> will return false if no 
+     *          <code>requestId</code> was provided from SAT.
      * @throws IllegalArgumentException if satInstant is null
      */
     public SolicitaResponse(Instant satInstant, String statusCode, String message, String requestId) {
@@ -42,14 +44,31 @@ public class SolicitaResponse extends SatResponse {
         this.requestId = requestId;
     }
     
+    /**
+     * Returns the request Id provided from SAT in order to identify and do
+     * follow-up on the download request that originated this response.
+     * 
+     * @return the requestId provided from SAT.
+     */
     public String getRequestId() {
         return requestId;
     }
     
+    /**
+     * Returns true if this response has an accepted status code and has a non
+     * null and non blank <code>requestId</code>.
+     * 
+     * @return true if this is an accepted response
+     */
     @Override public boolean isAccept() {
         return (super.isAccept() && requestId != null && !requestId.isBlank());
     }
 
+    /**
+     * Returns a string representation of this response
+     * 
+     * @return a string representation of this response
+     */
     @Override public String toString() {
         return new StringBuilder("SolicitaResponse{")
                 .append("instant=").append(satInstant)

@@ -6,19 +6,24 @@
 package com.sicomsa.dmt;
 
 /**
- *
- * @author https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198
- * @since 2024.11.22
+ * A storage for <code>Credentials</code>. Maps the <code>Credentials</code> to
+ * contributor(s) RFCs.
  * 
- * Provides credentials of contributor(s).
+ * 
+ * @author <a href="https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198">Beto Lopez</a>
+ * @version 2024.11.22
+ * @since 1.0
+ * 
  *
  */
 public interface CredentialsStore {
     /**
+     * Returns <code>Credentials</code> mapped to the RFC received.
      * 
-     * @param rfc will be upper casted before the search
-     * @return credentials for the rfc provided or null if not found
-     * @throws RepositoryException 
+     * @param rfc RFC of the contributor, will be upper casted before the search
+     * @return credentials Credentials of the contributor with the given RFC
+     * or null if not found
+     * @throws RepositoryException if there were repository problems
      */
-    public Credentials getCredentials(String rfc) throws RepositoryException;
+    public Credentials getCredentials(String rfc);
 }
