@@ -44,6 +44,7 @@ public class DescargaResponse extends SatResponse {
      * @param message the message received in this response
      * @param packageId the id of the package that was meant to be downloaded
      * @param encodedPackage the encoded package received
+     * @throws IllegalArgumentException if satInstant is null
      */
     public DescargaResponse(Instant satInstant, String statusCode, String message, String packageId, String encodedPackage) {
         this(satInstant, statusCode, message, packageId, encodedPackage, false);
@@ -58,6 +59,7 @@ public class DescargaResponse extends SatResponse {
      * @param message the message received in this response
      * @param packageId the id of the package that was meant to be downloaded
      * @param disposed true if the package was disposed
+     * @throws IllegalArgumentException if satInstant is null
      */
     protected DescargaResponse(Instant satInstant, String statusCode, String message, String packageId, boolean disposed) {
         this(satInstant, statusCode, message, packageId, null, disposed);
@@ -72,6 +74,7 @@ public class DescargaResponse extends SatResponse {
      * @param packageId the id of the package that was meant to be downloaded
      * @param encodedPackage the encoded package received
      * @param disposed true if the package was disposed
+     * @throws IllegalArgumentException if satInstant is null
      */
     protected DescargaResponse(Instant satInstant, String statusCode, String message,
             String packageId, String encodedPackage, boolean disposed) {
@@ -103,7 +106,12 @@ public class DescargaResponse extends SatResponse {
     
     /**
      * Returns the encoded package in this response.
-     * 
+     * <p>An encoded package contains the text as received from the WS.
+     * To get its bytes you must decoded it, for example:</p>
+     * <pre>
+     * byte[] decoded = java.util.Base64.getDecoder().decode(encodedPackage);
+     * </pre>
+     *  
      * @return the encoded package in this response.
      */
     public String getEncodedPackage() {

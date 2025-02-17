@@ -21,30 +21,65 @@ import java.time.Instant;
 
 
 /**
+ * Default implementation of {@link com.sicomsa.dmt.DMTService} to consume the WS.
+ * <p>When you create a DownloadService you assign a {@link SvcMessageFactory} that
+ * will be used as the context to instantiate the concrete services this service
+ * will use.</p>
+ * <p>You can set to this class a {@link com.sicomsa.dmt.DownloadRepository} that
+ * will be used to save the CFDIs downloaded. If you do not set one a default
+ * {@link LocalRepository} will be used.</p>
+ *  
+ * @author <a href="https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198">Beto Lopez</a>
+ * @version 2024.11.10
+ * @since 1.0
  *
- * @author https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198
- * @since 2024.11.10
- *
- * Default implementation of DMTService.
- * 
- * You can set the DownloadRepository that clients will use to save downloaded
- * data. If the repository is not set, a default LocalRepository instance will
- * be used.
+ *  
  * 
  */
 public class DownloadService implements DMTService {
 
+    /**
+     * Factory used to build services
+     */
     protected SvcMessageFactory factory;
+    
+    /**
+     * Current DownloadRepository
+     */
     protected DownloadRepository repository;
+    
+    /**
+     * Service that performs authentication service
+     */
     protected Service<Authorization,Object> autenticaSvc;
+    
+    /**
+     * Service that performs request download service
+     */
     protected Service<SolicitaResponse,Query> solicitaSvc;
+    
+    /**
+     * Service that performs verify download request service
+     */
     protected Service<VerificaResponse,String> verificaSvc;
+    
+    /**
+     * Service that performs download package service
+     */
     protected Service<DescargaResponse,String> descargaSvc;
     
+    /**
+     * Constructs a new DownloadService with a default <code>SvcMessageFactory</code>.
+     */
     public DownloadService() {
         this(DefaultMessageFactory.newInstance());
     }
     
+    /**
+     * Constructs a new DownloadServide with the specified factory.
+     * 
+     * @param factory the <code>SvcMessageFactory</code> this service will use
+     */
     public DownloadService(SvcMessageFactory factory) {
         if (factory == null) {
             throw new IllegalArgumentException("factory is required");
@@ -56,77 +91,74 @@ public class DownloadService implements DMTService {
         descargaSvc  = new DescargaSvc(factory);
     }
     
+    /**
+     * Returns the {@link Service} this DownloadService uses to implement
+     * the authentication service of the WS.
+     * 
+     * @return the {@link Service} this DownloadService uses to implement
+     * the authentication service of the WS.
+     */
     public Service<Authorization,Object> getAutenticaSvc() {
         return autenticaSvc;
     }
+    
+    /**
+     * Returns the {@link Service} this DownloadService uses to implement
+     * the request download service of the WS.
+     * 
+     * @return the {@link Service} this DownloadService uses to implement
+     * the request download service of the WS.
+     */
     public Service<SolicitaResponse,Query> getSolicitsSvc() {
         return solicitaSvc;
     }
+    
+    /**
+     * Returns the {@link Service} this DownloadService uses to implement
+     * the verify download request service of the WS.
+     * 
+     * @return the {@link Service} this DownloadService uses to implement
+     * the verify download request service of the WS.
+     */
     public Service<VerificaResponse,String> getVerificaSvc() {
         return verificaSvc;
     }
+    
+    
+    /**
+     * Returns the {@link Service} this DownloadService uses to implement
+     * the download package service of the WS.
+     * 
+     * @return the {@link Service} this DownloadService uses to implement
+     * the download package service of the WS.
+     */
     public Service<DescargaResponse,String> getDescargaSvc() {
         return descargaSvc;
     }
     
+    ////////////////////////////////////////////////////////////////////////////
+    /// DMTService implementation
+    ////////////////////////////////////////////////////////////////////////////
     
     @Override public Instant instant() {
         return factory.instant();
     }
     
-    /**
-     * 
-     * @param conn
-     * @param creds
-     * @return
-     * @throws SOAPException 
-     * @throws IllegalArgumentException if connection or credentials are null
-     */
     @Override public Authorization autentica(SOAPConnection conn,
             Credentials creds) throws SOAPException {
         return autenticaSvc.callTheService(conn, creds, null, "");
     }
     
-    /**
-     * 
-     * @param conn
-     * @param creds
-     * @param query
-     * @param token
-     * @return
-     * @throws SOAPException 
-     * @throws IllegalArgumentException if connection or credentials are null
-     */
     @Override public SolicitaResponse solicita(SOAPConnection conn,
             Credentials creds, Query query, String token) throws SOAPException {
         return solicitaSvc.callTheService(conn, creds, query, token);
     }
     
-    /**
-     * 
-     * @param conn
-     * @param creds
-     * @param requestId
-     * @param token
-     * @return
-     * @throws SOAPException 
-     * @throws IllegalArgumentException if connection, credentials or requestId are null
-     */
     @Override public VerificaResponse verifica(SOAPConnection conn,
             Credentials creds, String requestId, String token) throws SOAPException {
         return verificaSvc.callTheService(conn, creds, requestId, token);
     }
     
-    /**
-     * 
-     * @param conn
-     * @param creds
-     * @param packageId
-     * @param token
-     * @return
-     * @throws SOAPException 
-     * @throws IllegalArgumentException if connection, credentials or packageId are null
-     */
     @Override public DescargaResponse descarga(SOAPConnection conn,
             Credentials creds, String packageId, String token) throws SOAPException {
         return descargaSvc.callTheService(conn, creds, packageId, token);

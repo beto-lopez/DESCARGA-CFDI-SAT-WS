@@ -35,26 +35,32 @@ import com.sicomsa.dmt.RealCredentials;
 import com.sicomsa.dmt.RepositoryException;
 
 /**
- *
- * @author https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198
- * @since 2024.08.17
+ * Helper methods for loading certificates and private keys from files.
  * 
- * Methods for loading certificates and private keys from files.
+ * @author <a href="https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198">Beto Lopez</a>
+ * @version 2024.08.17
+ * @since 1.0
  * 
  */
 public final class CertUtils {
     
     /**
+     * Creates RealCredentials from the contents of a certificate file
+     * and a private key file with a given password.
      * 
-     * @param rfc
-     * @param certFile
-     * @param keyFile
-     * @param pwd
-     * @return
-     * @throws RepositoryException
+     * @param rfc the RFC that the RealCredentials will have
+     * @param certFile the file name of the file that contains the certificate
+     * @param keyFile the file name of the file that contains the private key
+     * @param pwd the password related to the private key
+     * @return the RealCredentials with with a X509Certificate and a PrivateKey
+     *         retrieved from a certificate file and a private key file with a
+     *         given password and rfc.
+     * @throws IllegalArgumentException if rfc is null or blank
+     * @throws NullPointerException if certFile, keyFile or pwd are null
+     * @throws RepositoryException if any other problem arose while creating the entry
      */
-    public static RealCredentials loadCredentials(String rfc, String certFile, String keyFile, char[] pwd)
-            throws RepositoryException {
+    public static RealCredentials loadCredentials(String rfc, String certFile,
+            String keyFile, char[] pwd) {
         try {
             X509Certificate cert = loadCertificate(certFile);
             PrivateKey pk = loadPrivateKey(keyFile, pwd);
@@ -66,15 +72,20 @@ public final class CertUtils {
     }
     
     /**
+     * Creates a KeyStore.PrivateKeyEntry from the contents of a certificate file
+     * and a private key file with a given password.
      * 
-     * @param certFile
-     * @param keyFile
-     * @param pwd
-     * @return
-     * @throws RepositoryException 
+     * @param certFile the file name of the file that contains the certificate
+     * @param keyFile the file name of the file that contains the private key
+     * @param pwd the password related to the private key
+     * @return a KeyStore.PrivateKeyEntry with a X509Certificate and a PrivateKey
+     *         retrieved from a certificate file and a private key file with a
+     *         given password.
+     * @throws NullPointerException if certFile, keyFile or pwd are null
+     * @throws RepositoryException if any other problem arose while creating the entry
      */
-    public static KeyStore.PrivateKeyEntry loadAsKeyStoreEntry(String certFile, String keyFile, char[] pwd) 
-            throws RepositoryException {
+    public static KeyStore.PrivateKeyEntry loadAsKeyStoreEntry(String certFile,
+            String keyFile, char[] pwd) {
         try {
             Certificate[] chain = new Certificate[1];
             chain[0] = loadCertificate(certFile);
@@ -86,12 +97,18 @@ public final class CertUtils {
         }
     }
     
+    ////////////////////////////////////////////////////////////////////////////
+    /// Certificate loading
+    ////////////////////////////////////////////////////////////////////////////
+    
     /**
+     * Creates a X509Certificate from the contents of a file with the specified
+     * fileName.
      * 
-     * @param fileName
-     * @return
-     * @throws IOException
-     * @throws CertificateException 
+     * @param fileName the fileName of the file to get the certificate from
+     * @return a X509Certificate read from a file
+     * @throws IOException if there were IO related problems
+     * @throws CertificateException if there were Certificate related problems
      * @throws NullPointerException if fileName is null
      */
     public static X509Certificate loadCertificate(String fileName) throws IOException, CertificateException {
@@ -99,11 +116,12 @@ public final class CertUtils {
     }
     
     /**
+     * Creates a X509Certificate from the contents of a File.
      * 
-     * @param file
-     * @return
-     * @throws IOException
-     * @throws CertificateException 
+     * @param file the file to get the certificate from
+     * @return a X509Certificate read from a file
+     * @throws IOException if there were IO related problems
+     * @throws CertificateException if there were Certificate related problems
      * @throws NullPointerException if file is null
      */
     public static X509Certificate loadCertificate(File file) throws IOException, CertificateException {
@@ -116,10 +134,11 @@ public final class CertUtils {
     }
     
     /**
+     * Creates a X509Certificate from an inputstream.
      * 
-     * @param in
-     * @return
-     * @throws CertificateException 
+     * @param in the imputstream that contains the certificate
+     * @return a X509Certificate build from the inputstream
+     * @throws CertificateException if there were Certificate related problems
      * @throws NullPointerException if in is null
      */
     public static X509Certificate loadCertificate(InputStream in) throws CertificateException {
@@ -129,17 +148,20 @@ public final class CertUtils {
         return (X509Certificate)CertificateFactory.getInstance("X.509")
                 .generateCertificate(in);
     }
+    
+    ////////////////////////////////////////////////////////////////////////////
+    /// Private Key loading
     ////////////////////////////////////////////////////////////////////////////
     
-    
     /**
+     * Creates a PrivateKey from the specified fileName and password.
      * 
-     * @param fileName
-     * @param pwd
-     * @return
-     * @throws IOException
-     * @throws PKCSException
-     * @throws OperatorCreationException 
+     * @param fileName the fileName of the file containing the data of the private key
+     * @param pwd the password related to the private key
+     * @return a PrivateKey created from the specified file and password
+     * @throws IOException if there was IO problems
+     * @throws PKCSException if there were other conversion problems
+     * @throws OperatorCreationException  if there were other problems
      * @throws NullPointerException if fileName or pwd are null
      */
     public static PrivateKey loadPrivateKey(String fileName, char[] pwd)
@@ -148,13 +170,14 @@ public final class CertUtils {
     }
     
     /**
+     * Creates a PrivateKey from the specified file and password.
      * 
-     * @param file
-     * @param pwd
-     * @return
-     * @throws IOException
-     * @throws PKCSException
-     * @throws OperatorCreationException 
+     * @param file the file containing the data of the private key
+     * @param pwd the password related to the private key
+     * @return a PrivateKey created from the specified file and password
+     * @throws IOException if there was IO problems
+     * @throws PKCSException if there were other conversion problems
+     * @throws OperatorCreationException  if there were other problems
      * @throws NullPointerException if file or pwd are null
      */
     public static PrivateKey loadPrivateKey(File file, char[] pwd)
@@ -166,13 +189,14 @@ public final class CertUtils {
     }
     
     /**
+     * Creates a PrivateKey from the specified data and password.
      * 
-     * @param data
-     * @param pwd
-     * @return
-     * @throws IOException
-     * @throws PKCSException
-     * @throws OperatorCreationException 
+     * @param data the data that contains the private key
+     * @param pwd the password related to the private key
+     * @return a PrivateKey created from the specified data and password
+     * @throws IOException if there was IO problems
+     * @throws PKCSException if there were other conversion problems
+     * @throws OperatorCreationException  if there were other problems
      * @throws NullPointerException if data or pwd are null
      */
     public static PrivateKey loadPrivateKey(byte[] data, char[] pwd)

@@ -22,7 +22,7 @@ public abstract class SatResponse implements java.io.Serializable {
     private static final long serialVersionUID = 20241014L;
     
     /**
-     * Status value that means request was accepted.
+     * Status value that means request was accepted = "5000".
      */
     public static final String STATUS_CODE_ACCEPT = "5000";
     

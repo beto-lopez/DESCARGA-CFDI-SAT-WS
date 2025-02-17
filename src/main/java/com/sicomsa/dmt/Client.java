@@ -128,7 +128,7 @@ public class Client  implements DMTClient {
      * 
      * @param conn the SOAP connection to use
      * @return an Authorization that contains the token and other useful methods.
-     * @throws SOAPException 
+     * @throws SOAPException if there was a SOAP error
      * @throws WebServiceException if there were other service related problems
      */
     protected Authorization autentica(SOAPConnection conn) throws SOAPException {

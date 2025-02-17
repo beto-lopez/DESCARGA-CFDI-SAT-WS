@@ -1,7 +1,6 @@
 /*
  * Copyright (c) Alberto Carlos Lopez Montemayor
  * All rights reserved.
- 
  */
 
 package com.sicomsa.dmt.svc;
@@ -28,35 +27,68 @@ import java.lang.System.Logger.Level;
 
 
 /**
+ * Extends <code>AbstractSvc</code> to provide a concrete implementation of the
+ * WS defined to authenticate:<br>
+ * "https://cfdidescargamasivasolicitud.clouda.sat.gob.mx/Autenticacion/Autenticacion.svc"
+ *  
+ * <p>This class has concrete methods to create a <code>SOAPMessage</code> and
+ * sign it in order to request an authorization token. And parse the response
+ * to provide an {@link com.sicomsa.dmt.Authorization} which provides methods to
+ * wrap the token and determine its validity.</p>
+ * 
  *
- * @author https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198
- * @since 2024.10.22
- * 
+ * @author <a href="https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198">Beto Lopez</a>
  * @version 2025.01.04  
+ * @since 1.0
  * 
- * Implementation of the autentica service from SAT.
- * Generates the signed SOAPMessage, sends it and parses the response returing
- * an Authorization with a token, if credentials were accepted.
  * 
  */
 public class AuthenticationSvc extends AbstractSvc<Authorization,Object> {
 
+    /**
+     * Name of the parent response Node
+     */
     protected QName qResponse = new QName(DMTA_URI, "AutenticaResponse"); 
+    
+    /**
+     * Name of the child response Node
+     */
     protected QName qResult =  new QName(DMTA_URI, "AutenticaResult");
     
+    /**
+     * Name of the request Node
+     */
     protected QName qAutentica = new QName(DMTA_URI, "Autentica", DMTA_PREFIX);
    
+    /**
+     * Reference to security related methods
+     */
     protected OasisSecurity security;
 
+    /**
+     * Timestamp URI
+     */
     protected String timestampUri = "TS"; 
     
     
     private static final System.Logger LOG = System.getLogger(AuthenticationSvc.class.getName());
     
+    /**
+     * Constructs an AuthenticationSvc with the specified context and a default
+     * OasisSecurity.
+     * 
+     * @param context the SvcMessageFactory to use
+     */
     public AuthenticationSvc(SvcMessageFactory context) {
         this(context, new OasisSecurity());
     }
     
+    /**
+     * Constructs an AuthenticationSvc with the specified context and security.
+     * 
+     * @param context the SvcMessageFactory to use
+     * @param security the security to use
+     */
     public AuthenticationSvc(SvcMessageFactory context, OasisSecurity security) {
         super(context);
         if (security == null) {
@@ -67,25 +99,46 @@ public class AuthenticationSvc extends AbstractSvc<Authorization,Object> {
     
     ////////////////////////////////////////////////////////////////////////////
     
+    /**
+     * Returns the name of this service.
+     * "AutenticaSvc"
+     * 
+     * @return the name of this service
+     */
     @Override public String getServiceName() {
         return "AutenticaSvc";
     }
+    
+    /**
+     * Returns the location of this service.
+     * "https://cfdidescargamasivasolicitud.clouda.sat.gob.mx/Autenticacion/Autenticacion.svc"
+     * 
+     * @return the location of this service
+     */
     @Override public String getLocation() {
         return "https://cfdidescargamasivasolicitud.clouda.sat.gob.mx/Autenticacion/Autenticacion.svc";
     }
+    /**
+     * Returns the SOAP action of this service.
+     * "http://DescargaMasivaTerceros.gob.mx/IAutenticacion/Autentica";
+     * 
+     * @return the SOAP action of this service
+     */
     @Override public String getSoapAction() {
         return "http://DescargaMasivaTerceros.gob.mx/IAutenticacion/Autentica";
     }
     
     
     /**
+     * Adds content to the specified <code>SOAPMessage</code> using the specified
+     * credentials and signs the content according to the WSDL.
      * 
-     * @param message
-     * @param creds
-     * @param request
-     * @throws SOAPException
-     * @throws GeneralSecurityException
-     * @throws SvcSignatureException 
+     * @param message message to add content to and sign
+     * @param creds credentials to use
+     * @param request additional data, can be null
+     * @throws SOAPException if there were SOAP related problems
+     * @throws GeneralSecurityException if there were security related problems
+     * @throws SvcSignatureException  if there were other signature related problems
      * @throws NullPointerException if message or creds are null
      */
     @Override
@@ -108,10 +161,23 @@ public class AuthenticationSvc extends AbstractSvc<Authorization,Object> {
         creds.sign(signature, securityElement);
     }
     
+    /**
+     * Returns a random UUID
+     * 
+     * @return a random UUID
+     */
     protected String createSecurityTokenUUID() {
         return UUID.randomUUID().toString();
     }
     
+    /**
+     * Override of <code>addNamespaces</code> to add authorization and security
+     * namespaces.
+     * 
+     * @param envelope the envelope to add namespaces to
+     * @throws SOAPException if there were SOAP related problems
+     * @throws NullPointerException if envelope is null
+     */
     @Override
     protected void addNamespaces(SOAPEnvelope envelope) throws SOAPException {
         envelope.addNamespaceDeclaration(DMTA_PREFIX, DMTA_URI);
@@ -119,6 +185,17 @@ public class AuthenticationSvc extends AbstractSvc<Authorization,Object> {
         security.addNamespaces(envelope);
     }
     
+    /**
+     * Returns an <code>Authorization</code> parsed from the specified message.
+     * 
+     * @param message message to be parsed
+     * @param instant instant the message was received 
+     * @param request request Object, can be null
+     * @return an <code>Authorization</code>
+     * @throws SOAPException if there were SOAP related problems
+     * @throws IllegalArgumentException if message or instant are null
+     * @throws SvcParseException if there were parsing related problems
+     */
     @Override
     public Authorization parseReceivedMessage(SOAPMessage message, Instant instant, Object request) throws SOAPException {
         if (message == null || instant == null) {

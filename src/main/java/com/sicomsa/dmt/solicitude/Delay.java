@@ -6,13 +6,28 @@
 package com.sicomsa.dmt.solicitude;
 
 /**
+ * Values for the state of the Delay.
+ * <p>A <code>Delay</code> means that the request application was accepted but its
+ * verification is not yet ready.</p>
  *
- * @author https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198
- * @since 2024.11.06
+ * @author <a href="https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198">Beto Lopez</a>
+ * @version 2024.11.06
+ * @since 1.0
  * 
- * A Delay means that SAT has already authorized the request but has not yet
- * finished verifying it.
  */
 public enum Delay {
-    ACCEPTED, IN_PROGRESS, OTHER;
+    /**
+     * The request was accepted, its verification is pending
+     */
+    ACCEPTED,
+    
+    /**
+     * The request was accepted, its verification is in progress
+     */
+    IN_PROGRESS,
+    
+    /**
+     * The request was accepted, its verification is not yet ready for other reasons.
+     */
+    OTHER;
 }

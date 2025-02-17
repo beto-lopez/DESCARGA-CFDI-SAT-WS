@@ -27,7 +27,7 @@ public class VerificaResponse extends SatResponse {
     private static final long serialVersionUID = 20250104L;
     
     /**
-     * Status code value when there were no CFDI's found with given request.
+     * Status code value when there were no CFDI's found with given request = "5004".
      */
     public static final String NO_INFO_FOUND_STS_CODE = "5004";
     
@@ -106,6 +106,7 @@ public class VerificaResponse extends SatResponse {
      * @param state state of the request
      * @param solicitudeSts status code of the download request
      * @param requestId request if of the download request
+     * @throws IllegalArgumentException if satInstant is null
      */
     public VerificaResponse(
             Instant satInstant,
@@ -131,6 +132,7 @@ public class VerificaResponse extends SatResponse {
      * @param requestId request if of the download request
      * @param cfdis ammount of CFDI's found for download
      * @param packageIds wrapper of the list of ids to download
+     * @throws IllegalArgumentException if satInstant is null
      */
     public VerificaResponse(
             Instant satInstant,

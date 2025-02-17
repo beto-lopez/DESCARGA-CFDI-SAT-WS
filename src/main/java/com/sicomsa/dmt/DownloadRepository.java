@@ -18,17 +18,14 @@ package com.sicomsa.dmt;
 public interface DownloadRepository {
     
     /**
-     * Saves the <code>encodedPackage</code>. This package is encoded as it
-     * was received from SAT in a <code>SOAPMessage</code>.<p>
-     * To get the package's byte[] you can use a Base64.decoder:
-     *   byte[] decoded = java.util.Base64.getDecoder().decode(encodedPackage);
+     * Saves the <code>encodedPackage</code>.
      * 
      * @param rfc RFC of the contributor that requested the download
      * @param packageId Id of the package downloaded
      * @param encodedPackage the package encoded as received from SAT WS.
-     * @param params alternate parameters
+     * @param params alternative parameters
      * @throws RepositoryException if there is a repository problem
-     * @see com.sicomsa.dmt.svc.LocalRepository#decode(String)
+     * @see DescargaResponse#getEncodedPackage()
      */
     public void save(String rfc, String packageId, String encodedPackage, Object params);
 

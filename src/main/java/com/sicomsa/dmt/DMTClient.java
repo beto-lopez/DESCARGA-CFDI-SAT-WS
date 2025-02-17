@@ -50,7 +50,7 @@ public interface DMTClient {
      * @param connection the connection to use to connect
      * @param requestId the requestId "IdSolicitud" to be verified
      * @return SAT's response to the verify request encapsulated in a <code>VerificaResponse</code>
-     * @throws SOAPException 
+     * @throws SOAPException if there was a SOAP error
      * @throws IllegalArgumentException if connection or requestId are null
      * @throws WebServiceException if there were other service related problems
      * @see VerificaResponse
@@ -64,7 +64,7 @@ public interface DMTClient {
      * @param connection the connection to be used
      * @param packageId the packageId to download
      * @return SAT's reponse encapsulated in a <code>DescargaResponse</code>
-     * @throws SOAPException 
+     * @throws SOAPException if there was a SOAP error
      * @throws IllegalArgumentException if connection or packageId are null
      * @throws WebServiceException if there were other service related problems
      * @see DescargaResponse

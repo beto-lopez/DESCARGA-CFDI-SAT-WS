@@ -14,7 +14,10 @@ import javax.xml.crypto.dsig.XMLSignature;
  * Abstract implementation of Credentials. Does not load the certificate until needed.<p>
  * 
  * To create a concrete CredentialsProxy you need to implement:
- * <pre>protected Credentials doGetCredentials() throws RepositoryException;</pre>
+ * <ul>
+ * <li>{@link CredentialsProxy#doGetCredentials() }</li>
+ * </ul>
+ * 
  * 
  * @author <a href="https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198">Beto Lopez</a>
  * @version 2025.01.03
