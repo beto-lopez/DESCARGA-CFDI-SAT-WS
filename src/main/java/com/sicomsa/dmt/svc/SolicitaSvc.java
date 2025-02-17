@@ -9,6 +9,7 @@ package com.sicomsa.dmt.svc;
 import com.sicomsa.dmt.Query;
 import com.sicomsa.dmt.SolicitaResponse;
 import com.sicomsa.dmt.util.SOAPUtils;
+import com.sicomsa.dmt.util.SvcParseException;
 
 import jakarta.xml.soap.SOAPMessage;
 import jakarta.xml.soap.SOAPElement;
@@ -21,52 +22,113 @@ import java.time.Instant;
 import java.util.Set;
 
 /**
- *
- * @author https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198
- * @since 2024.10.22
+ * Extends <code>AbstractGenericSvc</code> to provide a concrete implementation
+ * of the WS defined for requesting downloads:<br>
+ * "https://cfdidescargamasivasolicitud.clouda.sat.gob.mx/SolicitaDescargaService.svc"
  * 
+ * <p>This class has concrete methods to add content of the download request (<code>Query</code>)
+ * to the <code>SOAPMessage</code> to send, sign the message, and parse the
+ * response from SAT in a {@link com.sicomsa.dmt.SolicitaResponse} instance which will
+ * contain the relevant data of the response.</p>
+ * <p>If <code>SolicitaResponse</code>'s method {@link com.sicomsa.dmt.SolicitaResponse#isAccept() isAccept()},
+ * returns true will mean the request was accepted and we can now verify using
+ * <code>SolicitaResponse</code>'s method {@link com.sicomsa.dmt.SolicitaResponse#getRequestId() getRequestId()}
+ * which will give us the request id that should be used to verify the request.</p>
+ * 
+ * @see com.sicomsa.dmt.SolicitaResponse for more information about the response.
+ * 
+ * 
+ * @author <a href="https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198">Beto Lopez</a>
  * @version 2025.01.04
+ * @since 1.0
  * 
- * Implements Solicita Service from SAT.
- * Signs and sends the SOAPMessage, and parses the response returning a 
- * SolicitaResponse instance that will contain a requestId (IdSolicitud) that
- * will be used in the VerificaSvc to verify the request.
  * 
  */
 public class SolicitaSvc extends AbstractGenericSvc<SolicitaResponse,Query> {
     
+    /**
+     * Name of the Solicita response Node
+     */
     public static final QName RESPONSE_NAME = new QName(DMT_URI, "SolicitaDescargaResponse", DMT_PREFIX); 
+    
+    /**
+     * Name of the Solicita result Node
+     */
     public static final QName RESULT_NAME = new QName(DMT_URI, "SolicitaDescargaResult", DMT_PREFIX); 
     
+    /**
+     * QName of requestId
+     */
     public static final QName REQUEST_ID = new QName("IdSolicitud"); //attribite
     
+    /**
+     * Name of parent Solicita request Node
+     */
     public static final QName SOLICITA = new QName(DMT_URI, "SolicitaDescarga", DMT_PREFIX);
+    
+    /**
+     * Name of child Solicita request Node
+     */
     public static final QName SOLICITUD = new QName(DMT_URI, "solicitud", DMT_PREFIX);
     
+    /**
+     * Name of parent RFC receptors request Node
+     */
     public static final QName RFC_RECEPTORES = new QName(DMT_URI,"RfcReceptores",DMT_PREFIX);
+    
+    /**
+     * Name of child RFC receptors request Node
+     */
     public static final QName RFC_RECEPTOR = new QName(DMT_URI,"RfcReceptor",DMT_PREFIX);
 
+    /**
+     * Builds a SolicitaSvc with the specified SvcMessageFactory
+     * 
+     * @param context the SvcMessageFactory to be used
+     */
     public SolicitaSvc(SvcMessageFactory context) {
         super(context);
     }
    
+    /**
+     * Returns the service name of this service.
+     * "SolicitaSvc"
+     * 
+     * @return the service name of this service
+     */
     @Override public String getServiceName() {
         return "SolicitaSvc";
     }
+    
+    /**
+     * Returns the location of this service.
+     * "https://cfdidescargamasivasolicitud.clouda.sat.gob.mx/SolicitaDescargaService.svc"
+     * 
+     * @return the location of this service.
+     */
     @Override public String getLocation() {
         return "https://cfdidescargamasivasolicitud.clouda.sat.gob.mx/SolicitaDescargaService.svc";
     }
+    
+    /**
+     * Returns the SOAP action of this service.
+     * "http://DescargaMasivaTerceros.sat.gob.mx/ISolicitaDescargaService/SolicitaDescarga"
+     * 
+     * @return the SOAP action of this service
+     */
     @Override public String getSoapAction() {
         return "http://DescargaMasivaTerceros.sat.gob.mx/ISolicitaDescargaService/SolicitaDescarga";
     }
     
     /**
+     * Adds attributes of Query and receptors to the <code>SOAPMessage</code>
+     * received and returns the <code>SOAPElement</code> to be signed.
      * 
-     * @param message
-     * @param rfc
-     * @param query
-     * @return
-     * @throws SOAPException 
+     * @param message the message to add content to
+     * @param rfc the RFC of contributor making request
+     * @param query the query with contributor´s request
+     * @return the <code>SOAPElement</code> to be signed
+     * @throws SOAPException if there were SOAP related problems
      * @throws IllegalArgumentException if message or query are null
      */
     @Override
@@ -77,6 +139,16 @@ public class SolicitaSvc extends AbstractGenericSvc<SolicitaResponse,Query> {
         return addContent(message.getSOAPBody(), query);
     }
     
+    /**
+     * Adds attributes of Query and receptors to the <code>SOAPElement</code>
+     * received and returns the <code>SOAPElement</code> to be signed.
+     * 
+     * @param parent the element to add query data to
+     * @param query the query with the request data
+     * @return the <code>SOAPElement</code> to be signed
+     * @throws SOAPException if there were SOAP related problems
+     * @throws IllegalArgumentException if parent or query are null
+     */
     public static SOAPElement addContent(SOAPElement parent, Query query) throws SOAPException {
         if (parent == null || query == null) {
             throw new IllegalArgumentException("invalid parameters");
@@ -89,22 +161,33 @@ public class SolicitaSvc extends AbstractGenericSvc<SolicitaResponse,Query> {
         return element;
     }
     /**
+     * Adds receptor elements to the specified element.
+     * <p>This method follows de WSDL definition when having RFC receptors in
+     * the requesting SOAPmessage to send to de WS.</p>
      * 
-     * @param element
-     * @param receptoresList
-     * @throws SOAPException 
-     * 
+     * @param element element to be appended with receptor elements
+     * @param receptores string Set of RFC's to add to the element
+     * @throws SOAPException if there were SOAP related problems
+     * @throws NullPointerException if element is null
      */
-    public static void addReceptores(SOAPElement element, Set<String> receptoresList) throws SOAPException {
-        if (receptoresList != null && !receptoresList.isEmpty()) {
+    public static void addReceptores(SOAPElement element, Set<String> receptores) throws SOAPException {
+        if (receptores != null && !receptores.isEmpty()) {
             SOAPElement receptoresElement = element.addChildElement(RFC_RECEPTORES);
-            for (String rfcReceptor : receptoresList) {
+            for (String rfcReceptor : receptores) {
                 receptoresElement.addChildElement(RFC_RECEPTOR)
                         .setTextContent(rfcReceptor);
             }
         }
     }
     
+    /**
+     * Sets attributes of the specified <code>Query</code> to the specified
+     * <code>SOAPElement</code>.
+     * 
+     * @param element element to set attributes to
+     * @param query query to get the attributes from
+     * @throws NullPointerException if element or query are null
+     */
     public static void setAttributes(SOAPElement element, Query query) {
         query.getAttributes().forEachRemaining(name-> {
             element.setAttribute(name, query.getAttributeValue(name));
@@ -116,12 +199,16 @@ public class SolicitaSvc extends AbstractGenericSvc<SolicitaResponse,Query> {
     ////////////////////////////////////////////////////////////////////////////
     
     /**
+     * Returns a <code>SolicitaResponse</code> parsing the specified <code>SOAPMessage</code>
+     * using the specified instant as the time the response was received.
      * 
-     * @param message
-     * @param instant
-     * @param request
-     * @return
-     * @throws SOAPException 
+     * @param message to be parsed
+     * @param instant instant to be used to set response time
+     * @param request <code>Query</code> sent that originated the message
+     * @return a <code>SolicitaResponse</code>
+     * @throws SOAPException if there were SOAP related problems
+     * @throws IllegalArgumentException if message or instant are null
+     * @throws SvcParseException if there were problems while parsing message
      */
     @Override
     public SolicitaResponse parseReceivedMessage(SOAPMessage message, Instant instant, Query request) throws SOAPException {
@@ -131,6 +218,19 @@ public class SolicitaSvc extends AbstractGenericSvc<SolicitaResponse,Query> {
         return parseResponse(message.getSOAPBody(), instant);
     }
 
+    /**
+     * Returns a <code>SolicitaResponse</code> parsed from the specified
+     * <code>SOAPElement</code>.
+     * <p>The specified instant will be used to set the time the response was
+     * received</p>
+     * 
+     * @param element element to be parsed
+     * @param instant the response was received
+     * @return a <code>SolicitaResponse</code> 
+     * @throws SOAPException if there were SOAP related problems
+     * @throws IllegalArgumentException if element or instant are null
+     * @throws SvcParseException if there were parsing related problems
+     */
     public static SolicitaResponse parseResponse(SOAPElement element, Instant instant) throws SOAPException {
         if (element == null || instant == null) {
             throw new IllegalArgumentException("invalid parameters");
