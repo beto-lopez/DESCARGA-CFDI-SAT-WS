@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.sicomsa.dmt"},{"l":"com.sicomsa.dmt.solicitude"},{"l":"com.sicomsa.dmt.solicitude.batch"},{"l":"com.sicomsa.dmt.svc"},{"l":"com.sicomsa.dmt.util"}];updateSearchResults();
