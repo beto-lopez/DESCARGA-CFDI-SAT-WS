@@ -7,7 +7,7 @@ Con estos paquetes puedes descargar todos tus CFDIs del servicio de descarga mas
 
 Puedes ver la documentación en esta liga: [Overview (com.sicomsa.dmt | DESCARGA-CFDI-SAT-WS)](https://beto-lopez.github.io/DESCARGA-CFDI-SAT-WS/).
 
-### Ejemplo práctico para descargar cfdi´s emitidos y recibidos de un período.
+Ejemplo práctico para descargar cfdi´s emitidos y recibidos de un período.
 
     package DMTDemo;
 
