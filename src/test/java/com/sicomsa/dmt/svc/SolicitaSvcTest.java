@@ -6,8 +6,6 @@
 package com.sicomsa.dmt.svc;
 
 
-import com.sicomsa.dmt.svc.SolicitaSvc;
-import com.sicomsa.dmt.svc.DefaultMessageFactory;
 import com.sicomsa.dmt.Query;
 import com.sicomsa.dmt.SolicitaResponse;
 

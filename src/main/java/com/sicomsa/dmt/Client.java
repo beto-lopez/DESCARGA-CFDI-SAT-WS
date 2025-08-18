@@ -26,7 +26,7 @@ import java.security.cert.X509Certificate;
  * 
  * @author <a href="https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198">Beto Lopez</a>
  * @since 1.0
- * @version 2025.01.03
+ * @version 2025.06.14
  * 
  */
 public class Client  implements DMTClient {
@@ -51,7 +51,10 @@ public class Client  implements DMTClient {
      * which will use the default service to call SAT.
      * 
      * @param credentials the credentials to use make requests
+     * 
+     * @deprecated Deprecated since version 1.5.
      */
+    @Deprecated
     public Client(Credentials credentials) {
         this(credentials, new DownloadService());
     }

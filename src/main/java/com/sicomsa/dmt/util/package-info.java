@@ -7,10 +7,11 @@
  * and from strings; write and read them from Files, and some parsing.
  * <p>It has also helper methods to load certificates and build SAT query
  * requests.</p>
+ * <p>As of version 1.5, use {@link QueryBuilder} to build download request queries.</p>
  * 
  * 
  * @author <a href="https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198">Beto Lopez</a>
- * @version 2025-02-09
+ * @version 2025-06-17
  * @since 1.0
  * 
  */

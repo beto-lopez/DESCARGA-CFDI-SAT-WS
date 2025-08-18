@@ -30,12 +30,16 @@ import java.time.Instant;
  * {@link LocalRepository} will be used.</p>
  *  
  * @author <a href="https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198">Beto Lopez</a>
- * @version 2024.11.10
+ * @version 2025.06.14
  * @since 1.0
  *
- *  
+ * @deprecated This class has been deprecated since version 1.5. It has been
+ *             replaced by {@link com.sicomsa.dmt.svc.DMTDownloadService}.
+ *             It is recommended to instantiate it using class {@link com.sicomsa.dmt.svc.ServiceFactory}.
+ *
  * 
  */
+@Deprecated(since="1.5")
 public class DownloadService implements DMTService {
 
     /**

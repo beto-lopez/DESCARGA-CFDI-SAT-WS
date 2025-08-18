@@ -18,7 +18,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.sicomsa.dmt.svc.DownloadService;
+//import com.sicomsa.dmt.svc.DownloadService;
+import com.sicomsa.dmt.svc.ServiceFactory;
 import com.sicomsa.dmt.svc.DefaultMessageFactory;
 import java.time.Instant;
 import java.time.InstantSource;
@@ -86,7 +87,7 @@ public class ClientTest {
     }
     
     public static class ServiceMock implements DMTService {
-        protected DownloadService service;
+        protected DMTService service;
         protected DownloadRepository repository;
         
         protected boolean reject = false;
@@ -103,7 +104,7 @@ public class ClientTest {
         protected DescargaResponse descargaResponseRejected;
     
         public ServiceMock() {
-            service = new DownloadService();
+            service = ServiceFactory.newCfdiServiceFactory().newService(); //new DownloadService();
             repository = new LocalRepositoryTest.ConsoleRepository();
             Instant now = Instant.now();
             solicitaResponse = new SolicitaResponse(now, "5000", "Solicitud Aceptada", "5555555");
@@ -190,7 +191,7 @@ public class ClientTest {
     @Test
     public void testGetRfc() {
         System.out.println("getRfc");
-        Client instance = new Client(new UselessCredentials());
+        Client instance = new Client(new UselessCredentials(), newService());
         String expResult = "USELESS";
         String result = instance.getRfc();
         assertEquals(expResult, result);
@@ -247,7 +248,8 @@ public class ClientTest {
         String packageId = "packageId-to-save";
         String packageInfo = "theEncodedPackage";
         String encodedPackage = Base64.getEncoder().encodeToString(packageInfo.getBytes());
-        DownloadService service = new DownloadService();
+//        DownloadService service = new DownloadService();
+        DMTService service = newService();
         LocalRepositoryTest.ConsoleRepository repository = new LocalRepositoryTest.ConsoleRepository();
         service.setRepository(repository);
         Client instance = new Client(new UselessCredentials(), service);
@@ -260,7 +262,8 @@ public class ClientTest {
     @Test
     public void testGetRepository() {
         System.out.println("getRepository");
-        DownloadService service = new DownloadService();
+//        DownloadService service = new DownloadService();
+        DMTService service = newService();
         DownloadRepository expected = new LocalRepository();
         service.setRepository(expected);
         Client instance = new Client(new UselessCredentials(), service);
@@ -275,7 +278,8 @@ public class ClientTest {
     public void testIsValid() {
         System.out.println("isValid");
         DefaultMessageFactory factory = DefaultMessageFactory.newInstance();
-        DownloadService service = new DownloadService(factory);
+        //DownloadService service = new DownloadService(factory);
+        DMTService service = newService(factory);
         Client instance = new Client(new UselessCredentials(), service);
         assertFalse(instance.isValid(null));
         // public Authorization(Instant satInstant, Instant created, Instant expires, String token) {      
@@ -288,5 +292,14 @@ public class ClientTest {
         factory.setInstantSource(InstantSource.fixed(current));
         assertTrue(instance.isValid(auth));
     }
+    
+    protected DMTService newService() {
+        return ServiceFactory.newCfdiServiceFactory().newService();
+    }
 
+    protected DMTService newService(DefaultMessageFactory msgFactory) {
+        ServiceFactory factory = ServiceFactory.newCfdiServiceFactory();
+        factory.setMessageFactory(msgFactory);
+        return factory.newService();
+    }
 }

@@ -26,9 +26,10 @@ import java.time.DateTimeException;
  * {@link Query} mplementation that uses a {@link Builder} class to create
  * SAT query requests. Does not validate SAT rules, it is designed to be used by
  * a closer to the user builder.
+ * <p>As of version 1.5, building queries should be done with {@link com.sicomsa.dmt.util.QueryBuilder}</p>
  * 
  * @author <a href="https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198">Beto Lopez</a>
- * @version 2024.10.19
+ * @version 2025.06.16
  * @since 1.0
  * 
  */
@@ -398,6 +399,9 @@ public class QueryMap implements Query {
         /**
          * Sets the value of the <code>RFC_EMISOR</code> attribute with
          * the specified value.
+         * <b>Note: if you want to query received certificates by "all" 
+         * issuers, set rfcEmisor to an empty string instead of null.
+         * builder.setRfcEmisor("").</b>
          * 
          * @param rfcEmisor the RFC of the emisor to set
          * @return this builder
