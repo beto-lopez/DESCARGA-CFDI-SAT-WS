@@ -1,8 +1,8 @@
 ## Librerías en java para descarga masiva de CFDI's de SAT web service
 
-De momento estoy en la documentación y en los javadocs para facilitar el uso
-de estas librerías. Para posteriormente generar las clases que podrán decodificar
-todo lo que pudimos descargar y continuar agregando al proyecto.
+Estas librearías son solo una parte de una aplicación de código abierto que queremos hacer para PYMES.  
+Con estos paquetes puedes descargar todos tus CFDIs del servicio de descarga masiva SAT web service.  
+Puedes ver la documentación en esta liga: [Overview (com.sicomsa.dmt | DESCARGA-CFDI-SAT-WS)](https://beto-lopez.github.io/DESCARGA-CFDI-SAT-WS/).
 
 ### Ejemplo práctico para descargar cfdi´s emitidos y recibidos de un período.
 
