@@ -44,10 +44,14 @@ import java.util.zip.ZipEntry;
  *
  * @author https://www.linkedin.com/in/alberto-carlos-lopez-montemayor-586202198
  *
- * @since 2024.11.24
+ * @version 25.6.15
+ * @since 1.0
  *
+ * @deprecated This class has been deprecated since version 1.5.
+ *             No replacement yet. Will be replaced when needed.
  * 
  */
+@Deprecated
 public class DownloadServiceMock {
     protected SOAPMessage invalidTokenMsg;
     protected DMTServiceMock serviceMock;
